@@ -1,45 +1,53 @@
-import { Observable, Observer, Subscription } from "rxjs";
+import { Observable, Observer, Subscription } from 'rxjs';
 
 const namesObservable$ = new Observable<string>((subscriber) => {
-  console.log("Names Observable executed");
-  subscriber.next("Alice");
+  console.log('Names Observable executed');
+  subscriber.next('Alice');
 
   setTimeout(() => {
-    subscriber.next("Ben");
+    subscriber.next('Ben');
   }, 2000);
   setTimeout(() => {
-    subscriber.next("Charlie");
+    subscriber.next('Charlie');
   }, 4000);
 
   setTimeout(() => {
-    subscriber.error(new Error("Unhandled exception"));
-  }, 4500);
+    // subscriber.error(new Error('Unhandled exception'));
+  }, 6000);
 
-  // subscriber.complete();
+  setTimeout(() => {
+    subscriber.complete();
+  }, 8000);
 });
 
-const namesObserver: Partial<Observer<string>> = {
+const createNamesObserver: (name: string) => Partial<Observer<string>> = (
+  name: string
+) => ({
   next: (value: string) => {
-    console.log(value);
+    console.log(`${name}: `, value);
   },
   error: (err) => {
-    console.log(err);
+    console.log(`${name}: `, err);
   },
   complete: () => {
-    console.log("observable completed");
+    console.log(`${name}: `, 'observable completed');
   },
-};
+});
 
-const namesSubs: Subscription = namesObservable$.subscribe(namesObserver);
+const namesSubs: Subscription = namesObservable$.subscribe(
+  createNamesObserver('Subs 1')
+);
 
-const namesSubs2: Subscription = namesObservable$.subscribe(namesObserver);
+const namesSubs2: Subscription = namesObservable$.subscribe(
+  createNamesObserver('Subs 2')
+);
 
 setTimeout(() => {
-  console.log("Unsubscribe");
+  console.log('Unsubscribe');
   namesSubs.unsubscribe();
   namesSubs2.unsubscribe();
 }, 10000);
 
 /**
- * 004
+ * 005
  */
