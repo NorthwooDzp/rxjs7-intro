@@ -1,4 +1,4 @@
-import { Observable, Observer, Subscription } from 'rxjs';
+import { BehaviorSubject, Observable, Observer, Subscription } from 'rxjs';
 
 const namesObservable$ = new Observable<string>((subscriber) => {
   console.log('Names Observable executed');
@@ -49,5 +49,5 @@ setTimeout(() => {
 }, 10000);
 
 /**
- * 005
+ * 02/complete
  */
