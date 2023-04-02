@@ -1,4 +1,5 @@
-import { interval, Observable, Observer, Subscription } from 'rxjs';
+import { Observable, Observer, shareReplay, Subscription } from 'rxjs';
+import { ajax } from 'rxjs/ajax';
 
 /**
  * Module 02
@@ -113,18 +114,52 @@ function module03() {
   }, 5000);
 }
 
-module03();
+// module03();
 
 /**
  * Module 04
  */
 
-function module04() {}
+function module04() {
+  /**
+   * Cold Observable
+   */
 
-module04();
+  const ajax$ = ajax<any>('https://random-data-api.com/api/name/random_name');
 
-/**
- * 03/007
- * 03/003 review
- *
- */
+  ajax$.subscribe((data) => {
+    console.log(`Subs 1 =>  ${data.response.first_name}`);
+  });
+
+  ajax$.subscribe((data) => {
+    console.log(`Subs 2 =>  ${data.response.first_name}`);
+  });
+
+  ajax$.subscribe((data) => {
+    console.log(`Subs 3 =>  ${data.response.first_name}`);
+  });
+
+  const button = document.querySelector('button#hello');
+
+  const helloClick$ = new Observable<MouseEvent>((subscriber) => {
+    button.addEventListener('click', (event) => {
+      subscriber.next(event as MouseEvent);
+    });
+  });
+
+  helloClick$.subscribe((ev) => {
+    console.log(ev.type, ev.x, ev.y);
+  });
+
+  setTimeout(() => {
+    console.log('2nd sub');
+    helloClick$.subscribe((ev) => {
+      console.log(ev.type, ev.x, ev.y);
+    });
+  }, 5000);
+}
+
+// module04();
+ function module05 () {}
+
+module05()
