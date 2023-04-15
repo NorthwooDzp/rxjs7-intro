@@ -1,5 +1,16 @@
-import { Observable, Observer, shareReplay, Subscription } from 'rxjs';
+import {
+  from,
+  fromEvent,
+  interval,
+  Observable,
+  Observer,
+  of,
+  shareReplay,
+  Subscription,
+  timer,
+} from 'rxjs';
 import { ajax } from 'rxjs/ajax';
+import { makeLogger } from 'ts-loader/dist/logger';
 
 /**
  * Module 02
@@ -160,6 +171,50 @@ function module04() {
 }
 
 // module04();
- function module05 () {}
+function module05() {
+  of('Alice', 'Ben', 'Charlie').subscribe({
+    next: (val) => {
+      console.log('of => ', val);
+    },
+    complete: () => {
+      console.log('Of completed');
+    },
+  });
 
-module05()
+  from(['Alina', 'Bogdan', 'Katya']).subscribe({
+    next: (val) => {
+      console.log('from array => ', val);
+    },
+    complete: () => {
+      console.log('from array completed');
+    },
+  });
+
+  from(
+    new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve('Success');
+      }, 1500);
+    })
+  ).subscribe((value) => {
+    console.log('from Promise => ', value);
+  });
+
+  const clickStream$ = fromEvent(document.getElementById('hello'), 'click');
+  const clickSubs = clickStream$.subscribe((event) => console.log(event));
+  setTimeout(() => {
+    clickSubs.unsubscribe();
+  }, 10000);
+
+  const timer$ = timer(2000);
+  timer$.subscribe((val) => console.log(val));
+
+  const interval$ = interval(1000);
+  const intervalSubs = interval$.subscribe((val) => console.log(val));
+  const toId = setTimeout(() => {
+    intervalSubs.unsubscribe();
+    clearTimeout(toId);
+  }, 5000);
+}
+
+module05();
